@@ -18,6 +18,15 @@ function Get-DockerLogs {
     & cmd /c "docker logs $containerId 2>&1"
 }
 
+function Get-DockerNetworksIpAddress {
+    param (
+        $Id
+    )
+    
+    & docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $Id
+}
+
+
 Describe "MailHog image" {
 
     $arguments = @(
@@ -26,6 +35,7 @@ Describe "MailHog image" {
     )
     Write-Host "> docker $($arguments -join ' ')"
     $containerId = (& docker $arguments)
+    $containerAddress = Get-DockerNetworksIpAddress $containerId
 
 
     It "starts successfuly" {
@@ -34,7 +44,7 @@ Describe "MailHog image" {
 
         # TODO: make it non blocking, wait for corect value for 1 minute
         Start-Sleep -Seconds 20
-        $logs = & cmd /c "docker logs $containerId 2>&1"
+        $logs = Get-DockerLogs $containerId
         Write-Host "== BEGIN: docker logs =="
         $logs |
             Write-Host
@@ -44,18 +54,11 @@ Describe "MailHog image" {
             ? {$_ -like '*Serving under*'} |
             Should -HaveCount 1
     }
-
-    $arguments = @(
-        'inspect',
-        '--format', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}',
-        $containerId
-    )
-    Write-Host "> docker $($arguments -join ' ')"
-    $containerAddress = (& docker $arguments)
-
+    
     It "accepts emails" {
         Send-MailMessage -From 'sender@example.com' -To 'recipient@example.com' -Subject "Test" -SmtpServer $containerAddress
     }
+
 
     Context "Web UI" {
 
@@ -71,6 +74,7 @@ Describe "MailHog image" {
                 Should -BeLike '*<title>MailHog</title>*'
         }
     }
+
 
     Context "Web API" {
 
