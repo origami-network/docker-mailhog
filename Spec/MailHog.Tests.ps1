@@ -40,10 +40,10 @@ Describe "MailHog image" {
         $containerId
     )
     Write-Host "> docker $($arguments -join ' ')"
-    $containerHost = (& docker $arguments)
+    $containerAddress = (& docker $arguments)
 
     It "accepts emails" {
-        Write-Error "FIXME: implement case"
+        Send-MailMessage -From 'sender@example.com' -To 'recipient@example.com' -Subject "Test" -SmtpServer $containerAddress
     }
 
     Context "Web UI" {
