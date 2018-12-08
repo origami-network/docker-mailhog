@@ -89,5 +89,5 @@ Describe 'MailHog image' {
     }
 
 
-    Remove-Docker($containerId)
+    Remove-Docker $containerId -Force
 }
