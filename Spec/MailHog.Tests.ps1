@@ -78,12 +78,29 @@ Describe "MailHog image" {
 
     Context "Web API" {
 
+        # FIXME: use port 80 
+        $baseUrl = "http://$($containerAddress):8025/api/"
+
         It "exposess accepted emails" {
-            Write-Error "FIXME: implement case"
+            $from = "$( [guid]::NewGuid().ToString('d') )@example.com"
+            Send-MailMessage -From $from -To 'recipient@example.com' -Subject 'Test' -SmtpServer $containerAddress
+
+            $response = Invoke-RestMethod ($baseUrl + "v2/search?kind=from&query=$($from)")
+
+            $response.total |
+                Should -Be 1
         }
 
         It "allows to remove accepted emails" {
-            Write-Error "FIXME: implement case"
+            @(1..10) |
+                % { Send-MailMessage -From 'sender@example.com' -To "recipient-$($_)@example.com" -Subject "Test $($_)" -SmtpServer $containerAddress }
+
+            Invoke-RestMethod ($baseUrl + "v1/messages") -Method Delete |
+                Out-Null
+
+            $response = Invoke-RestMethod ($baseUrl + "v2/messages")
+            $response.total |
+                Should -Be 0            
         }
     }
 
