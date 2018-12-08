@@ -27,7 +27,7 @@ Describe "MailHog image" {
 
         Start-Sleep -Seconds 20
 
-        $logs = (& docker logs $containerId)
+        $logs = & cmd /c "docker logs $containerId 2>&1"
         Write-Host "== BEGIN: logs =="
         $logs |
             Write-Host
@@ -36,7 +36,7 @@ Describe "MailHog image" {
 
     $arguments = @(
         'inspect',
-        '--format', '{{ .NetworkSettings.IPAddress }}',
+        '--format', '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}',
         $containerId
     )
     Write-Host "> docker $($arguments -join ' ')"
