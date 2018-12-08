@@ -26,6 +26,21 @@ function Get-DockerNetworksIpAddress {
     & docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $Id
 }
 
+function Remove-Docker {
+    param (
+        $Id,
+        [switch] $Force
+    )
+
+    $script:arguments = @('rm')
+    if ($Force) {
+        $script:arguments += @('--force')
+    }
+    $script:arguments += @($Id)
+
+    & docker $script:arguments
+}
+
 
 Describe "MailHog image" {
 
@@ -105,12 +120,5 @@ Describe "MailHog image" {
     }
 
 
-    $arguments = @(
-        'rm',
-        '--force',
-        '--volumes',
-        $containerId
-    )
-    Write-Host "> docker $($arguments -join ' ')"
-    $containerId = (& docker $arguments)
+    Remove-Docker($containerId)
 }
