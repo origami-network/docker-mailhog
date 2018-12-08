@@ -8,7 +8,7 @@ param (
     $ModulesPath = (Join-Path $Here "Modules")
 )
 
-Import-Module (Join-Path $ModulesPath 'TestDrive.psm1') -Force
+# TBD: what to import : Import-Module (Join-Path $ModulesPath 'TestDrive.psm1') -Force
 
 
 Describe "MailHog image" {
