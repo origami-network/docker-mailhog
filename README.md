@@ -6,7 +6,7 @@
 
 | pulls | stars |
 | :--: | :--: |
-| TODO | TODO |
+| [![Docker Pulls](https://img.shields.io/docker/pulls/origaminetwork/mailhog.svg)](https://hub.docker.com/r/origaminetwork/plantuml/) | [![Docker Stars](https://img.shields.io/docker/stars/origaminetwork/mailhog.svg)](https://hub.docker.com/r/origaminetwork/plantuml/) |
 
 
 MailHog - Windows Docker image
