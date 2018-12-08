@@ -1,17 +1,17 @@
-[Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidUsingCmdletAliases", "")]
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingCmdletAliases', '')]
 
 param (
     [Parameter(Mandatory = $true)]
     $ImageName,
 
     $Here = (Split-Path -Parent $MyInvocation.MyCommand.Path),
-    $ModulesPath = (Join-Path $Here "Modules")
+    $ModulesPath = (Join-Path $Here 'Modules')
 )
 
 Import-Module (Join-Path $ModulesPath 'Docker.psm1') -Force
 
 
-Describe "MailHog image" {
+Describe 'MailHog image' {
 
     $arguments = @(
         'run', '-d'
@@ -19,36 +19,37 @@ Describe "MailHog image" {
     )
     Write-Host "> docker $($arguments -join ' ')"
     $containerId = (& docker $arguments)
-    $containerAddress = Get-DockerNetworksIpAddress $containerId
 
 
-    It "starts successfuly" {
+    It 'starts successfuly' {
         $LASTEXITCODE |
             Should -Be 0
 
         # TODO: make it non blocking, wait for corect value for 1 minute
         Start-Sleep -Seconds 20
         $logs = Get-DockerLogs $containerId
-        Write-Host "== BEGIN: docker logs =="
+        Write-Host '== BEGIN: docker logs =='
         $logs |
             Write-Host
-        Write-Host "== END: docker logs =="
+        Write-Host '== END: docker logs =='
 
         $logs |
             ? {$_ -like '*Serving under*'} |
             Should -HaveCount 1
     }
     
-    It "accepts emails" {
-        Send-MailMessage -From 'sender@example.com' -To 'recipient@example.com' -Subject "Test" -SmtpServer $containerAddress
+    It 'accepts emails' {
+        $containerAddress = Get-DockerNetworksIpAddress $containerId
+        Send-MailMessage -From 'sender@example.com' -To 'recipient@example.com' -Subject 'Test' -SmtpServer $containerAddress
     }
 
 
-    Context "Web UI" {
+    Context 'Web UI' {
 
+        $containerAddress = Get-DockerNetworksIpAddress $containerId
         $baseUrl = "http://$($containerAddress)/"
 
-        It "is accessable" {
+        It 'is accessable' {
             $response = Invoke-WebRequest $baseUrl -UseBasicParsing
 
             $response.StatusCode |
@@ -59,11 +60,12 @@ Describe "MailHog image" {
     }
 
 
-    Context "Web API" {
+    Context 'Web API' {
 
+        $containerAddress = Get-DockerNetworksIpAddress $containerId
         $baseUrl = "http://$($containerAddress)/api/"
 
-        It "exposess accepted emails" {
+        It 'exposess accepted emails' {
             $from = "$( [guid]::NewGuid().ToString('d') )@example.com"
             Send-MailMessage -From $from -To 'recipient@example.com' -Subject 'Test' -SmtpServer $containerAddress
 
@@ -73,14 +75,14 @@ Describe "MailHog image" {
                 Should -Be 1
         }
 
-        It "allows to remove accepted emails" {
+        It 'allows to remove accepted emails' {
             @(1..10) |
                 % { Send-MailMessage -From 'sender@example.com' -To "recipient-$($_)@example.com" -Subject "Test $($_)" -SmtpServer $containerAddress }
 
-            Invoke-RestMethod ($baseUrl + "v1/messages") -Method Delete |
+            Invoke-RestMethod ($baseUrl + 'v1/messages') -Method Delete |
                 Out-Null
 
-            $response = Invoke-RestMethod ($baseUrl + "v2/messages")
+            $response = Invoke-RestMethod ($baseUrl + 'v2/messages')
             $response.total |
                 Should -Be 0            
         }
