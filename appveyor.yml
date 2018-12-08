@@ -31,9 +31,9 @@ build_script:
 test_script:
    - ps: |
       .\Assert-DockerImage.ps1 -Verbose
-   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
       
 after_test:
+   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
    - ps: |
       if ($env:BUILD_TASKS_ERROR_COUNT) {
         Add-AppveyorMessage -Message "Resolve high remaining task to process." -Category Warning
