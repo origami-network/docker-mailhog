@@ -13,6 +13,10 @@ RUN powershell.exe -Command $ErrorActionPreference = 'Stop' ; \
 ENV MH_SMTP_BIND_ADDR=0.0.0.0:25
 EXPOSE 25/tcp
 
+ENV MH_API_BIND_ADDR=0.0.0.0:80
+ENV MH_UI_BIND_ADDR=0.0.0.0:80
+EXPOSE 80/tcp
+
 WORKDIR ${ARG_MAILHOG_PATH}
 SHELL ["cmd", "/S", "/C"]
 ENTRYPOINT [ "mailhog.exe" ]

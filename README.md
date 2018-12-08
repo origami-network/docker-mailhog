@@ -32,7 +32,12 @@ Before start the image need to be pulled from the [Docker Hub](https://hub.docke
 
 Where `X.X.X.Y` is the version of the image.
 
-By default the container will expose SMTP on TCP port 25.
+By default the container will expose:
+ - SMTP on TCP port 25,
+ - Web UI at URL `http://<container address>/`,
+ - Web API at URL `http://<container address>/api`).
+
+The `<container address>` is the IP address bind to the running instance.
 
 
 ### Sending email from PowerShell
@@ -40,7 +45,19 @@ By default the container will expose SMTP on TCP port 25.
 In order to send the email the PowerShell [`Send-MailMessage`](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/send-mailmessage) can be used.
 
 ```console
-> Send-MailMessage -From 'sender@example.com' -To 'recipient@example.com' -Subject "From PowerShell" -SmtpServer <container address>
+PS> Send-MailMessage -From 'sender@example.com' -To 'recipient@example.com' -Subject "From PowerShell" -SmtpServer <container address>
+```
+
+The `<container address>` is the IP address bind to the running instance.
+
+
+### Getting mails using API
+
+In order to get mails received by the server the fallowing PowerShell command can be used.
+
+```console
+PS> $baseUrl = 'http://<container address>/api/'
+PS> Invoke-RestMethod ($baseUrl + "v2/messages")
 ```
 
 The `<container address>` is the IP address bind to the running instance.
