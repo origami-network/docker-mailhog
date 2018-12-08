@@ -13,8 +13,21 @@ param (
 
 Describe "MailHog image" {
 
+    $arguments = @(
+        'run',  $ImageName
+    )
+    Write-Host "> docker $($arguments -join ' ')"
+    $containerId = (& docker $arguments)
+
+
     It "starts successfuly" {
-        Write-Error "FIXME: implement case"
+        $LASTEXITCODE |
+            Should -Be 0
+        $logs = (& docker logs $containerId)
+        Write-Host "== BEGIN: logs =="
+        $logs |
+            Write-Host
+        Write-Host "== END: logs =="
     }
 
     It "accepts emails" {
@@ -38,4 +51,14 @@ Describe "MailHog image" {
             Write-Error "FIXME: implement case"
         }
     }
+    
+
+    $arguments = @(
+        'rm',
+        '--force',
+        '--volumes',
+        $containerId
+    )
+    Write-Host "> docker $($arguments -join ' ')"
+    $containerId = (& docker $arguments)
 }
