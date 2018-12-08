@@ -4,6 +4,9 @@ image: Visual Studio 2017
 skip_tags: true
 
 
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 install:
    - ps: |
       $version = .\Get-ProjectVersion -Verbose -BuildNumber $env:APPVEYOR_BUILD_NUMBER
@@ -52,8 +55,9 @@ deploy:
   on:
     branch: master
     appveyor_repo_tag: false   
-
+  
 on_finish:
+   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
    - ps: |
       (. (Resolve-Path 'project.config.ps1')).Artifacts.Path |
         Resolve-Path |
