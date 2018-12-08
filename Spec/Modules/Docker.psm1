@@ -3,7 +3,7 @@ function Get-DockerLogs {
         $Id
     )
     
-    & cmd /c "docker logs $containerId 2>&1"
+    & cmd /c "docker logs $Id 2>&1"
 }
 
 function Get-DockerNetworksIpAddress {
