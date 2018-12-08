@@ -24,6 +24,9 @@ Describe "MailHog image" {
     It "starts successfuly" {
         $LASTEXITCODE |
             Should -Be 0
+
+        Start-Sleep -Seconds 20
+
         $logs = (& docker logs $containerId)
         Write-Host "== BEGIN: logs =="
         $logs |
