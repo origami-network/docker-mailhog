@@ -46,8 +46,7 @@ Describe "MailHog image" {
 
     Context "Web UI" {
 
-        # FIXME: use port 80 
-        $baseUrl = "http://$($containerAddress):8025/"
+        $baseUrl = "http://$($containerAddress)/"
 
         It "is accessable" {
             $response = Invoke-WebRequest $baseUrl -UseBasicParsing
@@ -62,8 +61,7 @@ Describe "MailHog image" {
 
     Context "Web API" {
 
-        # FIXME: use port 80 
-        $baseUrl = "http://$($containerAddress):8025/api/"
+        $baseUrl = "http://$($containerAddress)/api/"
 
         It "exposess accepted emails" {
             $from = "$( [guid]::NewGuid().ToString('d') )@example.com"
