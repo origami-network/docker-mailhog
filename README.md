@@ -1,7 +1,7 @@
 
 | release | master | latest |
 | :--: | :--: | :--: |
-| TODO | TODO | TODO |
+| TODO | [![master build](https://ci.appveyor.com/api/projects/status/7k4dybfrojw4ayvd/branch/master?svg=true)](https://ci.appveyor.com/project/BartDubois/docker-mailhog/branch/master) | [![latest build](https://ci.appveyor.com/api/projects/status/7k4dybfrojw4ayvd?svg=true)](https://ci.appveyor.com/project/BartDubois/docker-mailhog) |
 
 
 | pulls | stars |
